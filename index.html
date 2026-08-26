@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="함께 읽고, 문단에서 대화하는 여백의 브라우저 데모">
+  <title>여백 — 함께 읽는 독서 모임</title>
+  <link rel="stylesheet" href="/css/landing.css?v=20260824">
+</head>
+<body>
+  <div id="app" class="app-shell" data-view="home">
+    <header class="topbar">
+      <button class="brand" type="button" data-action="go-home" aria-label="여백 모임 홈으로 이동">
+        <span class="brand-mark" aria-hidden="true">여백</span>
+        <span class="brand-copy">함께 읽는 문장들</span>
+      </button>
+      <div class="topbar-actions">
+        <span class="session-note">새로고침하면 체험 기록이 초기화돼요</span>
+        <button class="button button-ghost" type="button" data-action="reset-demo">데모 초기화</button>
+      </div>
+    </header>
+
+    <div id="loading" class="loading-state" role="status">
+      <span class="loading-dot" aria-hidden="true"></span>
+      책장을 펼치고 있어요
+    </div>
+
+    <main id="home-view" class="home-view" hidden>
+      <nav class="club-nav" aria-label="내 모임">
+        <div class="nav-heading">
+          <p class="eyebrow">내 모임</p>
+          <p class="nav-count">2개의 모임</p>
+        </div>
+        <div id="club-list" class="club-list"></div>
+        <p class="demo-disclaimer">이 데모에서 만든 댓글과 진도는 저장되지 않습니다.</p>
+      </nav>
+
+      <section class="club-home" aria-labelledby="club-title">
+        <div class="club-heading">
+          <div>
+            <p id="club-kicker" class="eyebrow"></p>
+            <h1 id="club-title"></h1>
+            <p id="club-description" class="club-description"></p>
+          </div>
+          <div id="member-stack" class="member-stack" aria-label="모임원"></div>
+        </div>
+
+        <article class="reading-card">
+          <div id="book-cover" class="book-cover" aria-hidden="true"></div>
+          <div class="reading-summary">
+            <p class="eyebrow">함께 읽는 책</p>
+            <h2 id="book-title"></h2>
+            <p id="book-meta" class="book-meta"></p>
+            <div class="progress-block">
+              <div class="progress-label">
+                <span>나의 독서 진도</span>
+                <strong id="home-progress-text">0%</strong>
+              </div>
+              <div class="progress-track" aria-hidden="true"><span id="home-progress-bar"></span></div>
+            </div>
+            <button class="button button-primary" type="button" data-action="start-reading">
+              이어서 읽기
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          </div>
+        </article>
+
+        <section class="book-catalog-section" aria-labelledby="book-catalog-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">데모 서재</p>
+              <h2 id="book-catalog-title" tabindex="-1">다른 책 펼치기</h2>
+            </div>
+            <span id="book-count" class="subtle-copy"></span>
+          </div>
+          <div id="book-catalog" class="book-catalog"></div>
+        </section>
+
+        <section class="activity-section" aria-labelledby="activity-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">최근 대화</p>
+              <h2 id="activity-title">문장 곁에 남겨진 생각</h2>
+            </div>
+            <span class="subtle-copy">문단을 선택하면 대화를 이어갈 수 있어요</span>
+          </div>
+          <div id="activity-list" class="activity-list"></div>
+        </section>
+      </section>
+    </main>
+
+    <main id="reader-view" class="reader-view" hidden>
+      <nav class="reader-nav" aria-label="책 목차">
+        <button class="back-button" type="button" data-action="go-home">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+          모임으로
+        </button>
+        <div class="reader-book-meta">
+          <div id="reader-cover" class="reader-cover" aria-hidden="true"></div>
+          <div><strong id="reader-book-title"></strong><span id="reader-book-author"></span></div>
+        </div>
+        <div id="chapter-list" class="chapter-list"></div>
+      </nav>
+
+      <section class="reading-pane" aria-labelledby="chapter-title">
+        <div class="reader-toolbar" aria-label="읽기 설정">
+          <button class="mobile-back" type="button" data-action="go-home" aria-label="모임으로 돌아가기">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <label class="mobile-chapter-select">
+            <span>목차</span>
+            <select id="mobile-chapter" aria-label="읽을 장 선택"></select>
+          </label>
+          <div class="reading-progress-control">
+            <div class="reading-progress-label">
+              <span>독서 진도 <small>스크롤 자동 반영</small></span>
+              <strong id="reader-progress-text">0%</strong>
+            </div>
+            <div id="reading-progress" class="reading-progress-track" role="progressbar" aria-label="독서 진행률" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="독서 진행률 0퍼센트">
+              <span id="reading-progress-bar"></span>
+            </div>
+          </div>
+          <div class="font-controls" aria-label="본문 글자 크기">
+            <span>글자</span>
+            <button type="button" data-action="font-decrease" aria-label="본문 글자 작게">가</button>
+            <button type="button" data-action="font-increase" aria-label="본문 글자 크게" class="font-large">가</button>
+          </div>
+        </div>
+        <article class="book-page">
+          <header class="chapter-heading">
+            <p id="chapter-number" class="eyebrow"></p>
+            <h1 id="chapter-title" tabindex="-1"></h1>
+            <p class="passage-hint">마음에 머무는 문단을 누르면, 함께 읽는 사람들의 생각을 볼 수 있어요.</p>
+          </header>
+          <div id="passage-list" class="passage-list"></div>
+        </article>
+      </section>
+
+      <aside id="comment-panel" class="comment-panel" aria-labelledby="comment-heading" aria-hidden="true">
+        <div class="comment-panel-header">
+          <div>
+            <p class="eyebrow">선택한 문단</p>
+            <h2 id="comment-heading">함께 남긴 생각</h2>
+          </div>
+          <button class="icon-button panel-close" type="button" data-action="close-comments" aria-label="댓글 패널 닫기">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
+          </button>
+        </div>
+        <blockquote id="selected-passage" class="selected-passage"></blockquote>
+        <div id="comment-list" class="comment-list"></div>
+        <form id="comment-form" class="comment-form">
+          <label for="comment-input">내 생각 남기기</label>
+          <textarea id="comment-input" rows="3" maxlength="1000" placeholder="이 문단에 당신의 여백을 남겨주세요"></textarea>
+          <div class="form-footer">
+            <span id="comment-count">0 / 1000</span>
+            <div class="form-actions">
+              <button id="cancel-edit" class="button button-ghost" type="button" data-action="cancel-edit" hidden>취소</button>
+              <button id="submit-comment" class="button button-primary button-small" type="submit" disabled>댓글 남기기</button>
+            </div>
+          </div>
+        </form>
+      </aside>
+      <button id="panel-scrim" class="panel-scrim" type="button" data-action="close-comments" aria-label="댓글 배경 닫기" tabindex="-1"></button>
+    </main>
+
+    <div id="tutorial-backdrop" class="tutorial-backdrop" hidden>
+      <section id="tutorial-dialog" class="tutorial-dialog" role="dialog" aria-modal="true" aria-labelledby="tutorial-title" aria-describedby="tutorial-description" tabindex="-1">
+        <button id="tutorial-skip" class="tutorial-skip" type="button" data-action="tutorial-close">건너뛰기</button>
+        <div id="tutorial-symbol" class="tutorial-symbol" aria-hidden="true"></div>
+        <div class="tutorial-copy" aria-live="polite">
+          <p id="tutorial-kicker" class="eyebrow"></p>
+          <h2 id="tutorial-title" tabindex="-1"></h2>
+          <p id="tutorial-description"></p>
+        </div>
+        <div class="tutorial-progress">
+          <span id="tutorial-step-status"></span>
+          <div id="tutorial-dots" class="tutorial-dots" aria-hidden="true"></div>
+        </div>
+        <div class="tutorial-actions">
+          <button id="tutorial-previous" class="button button-ghost" type="button" data-action="tutorial-previous">이전</button>
+          <button id="tutorial-next" class="button button-primary" type="button" data-action="tutorial-next">다음</button>
+        </div>
+      </section>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  </div>
+  <script src="/js/demo.js?v=20260824-8" defer></script>
+</body>
+</html>

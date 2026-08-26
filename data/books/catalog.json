@@ -1,0 +1,12 @@
+[
+  { "id": "1984", "file": "1984.json" },
+  { "id": "old-man-and-the-sea", "file": "old-man-and-the-sea.json" },
+  { "id": "demian", "file": "demian.json" },
+  { "id": "metamorphosis", "file": "metamorphosis.json" },
+  { "id": "sherlock-holmes", "file": "sherlock-holmes.json" },
+  { "id": "the-great-gatsby", "file": "the-great-gatsby.json" },
+  { "id": "no-longer-human", "file": "no-longer-human.json" },
+  { "id": "pride-and-prejudice", "file": "pride-and-prejudice.json" },
+  { "id": "alice-in-wonderland", "file": "alice-in-wonderland.json" },
+  { "id": "jekyll-and-hyde", "file": "jekyll-and-hyde.json" }
+]

@@ -103,6 +103,8 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .book-catalog-section, .activity-section { margin-top: 52px; }
 .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 18px; }
 .section-heading h2 { margin: 6px 0 0; font-family: var(--brand); font-size: 24px; }
+.section-heading h2:first-child { margin-top: 0; }
+.section-description { margin: 8px 0 0; }
 .book-catalog { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
 .book-choice { min-width: 0; padding: 14px; border: 1px solid var(--line); border-radius: 16px; background: rgba(255,255,255,.64); text-align: left; transition: border-color 180ms ease, background 180ms ease, transform 180ms ease; }
 .book-choice[aria-current="true"] { border-color: var(--accent); background: var(--surface); box-shadow: 0 8px 22px rgba(60,56,51,.08); }
@@ -140,7 +142,6 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .reading-progress-control { flex: 1; max-width: 420px; display: grid; gap: 7px; font-size: 12px; color: var(--muted); }
 .reading-progress-label { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .reading-progress-label span { display: flex; align-items: baseline; gap: 8px; }
-.reading-progress-label small { color: var(--muted); font-size: 10px; }
 .reading-progress-control strong { color: var(--ink); }
 .reading-progress-track { height: 7px; border-radius: 99px; background: #e9e1d7; overflow: hidden; }
 .reading-progress-track span { width: 0; height: 100%; display: block; border-radius: inherit; background: var(--accent); transition: width 180ms ease; }
@@ -150,7 +151,6 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .book-page { width: min(680px, calc(100% - 56px)); margin: 0 auto; padding: 68px 0 120px; }
 .chapter-heading { margin-bottom: 50px; }
 .chapter-heading h1 { margin: 10px 0 18px; font-family: var(--reader); font-size: clamp(30px, 4vw, 42px); font-weight: 600; line-height: 1.4; }
-.passage-hint { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
 .passage-list { display: grid; gap: 10px; font-family: var(--reader); font-size: var(--reader-size); line-height: 2.05; word-break: keep-all; }
 .passage { width: calc(100% + 28px); margin-left: -14px; padding: 12px 14px; border: 0; border-left: 3px solid transparent; border-radius: 8px; background: transparent; text-align: left; position: relative; }
 .passage.has-comments { text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 5px; }

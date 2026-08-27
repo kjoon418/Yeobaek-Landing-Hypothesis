@@ -21,7 +21,7 @@
 
   const CLUBS = [
     {
-      id: "slow", name: "느린 독서 생활", description: "각자의 속도로 읽고, 오래 머문 문장을 나눠요.", icon: "느", members: ["나", "소연", "민준", "해나"],
+      id: "slow", name: "느린 독서 생활", description: "직접 읽고 생각을 나눠봐요.", icon: "느", members: ["나", "소연", "민준", "해나"],
       bookIds: ["1984", "old-man-and-the-sea", "demian", "no-longer-human", "pride-and-prejudice"]
     },
     {
@@ -36,18 +36,97 @@
     { symbol: "03", kicker: "서로의 시선을 만나고", title: "다른 사람의 생각도 발견해요", description: "같은 문장을 읽은 사람들의 생각을 확인하며, 혼자 읽을 때와는 다른 이야기를 만나보세요." }
   ];
 
-  const seedComments = () => ({
-    slow: {
-      "0:0": [
-        { id: "seed-1", author: "소연", content: "이 문장에서 잠시 멈췄어요. 오늘은 여기까지만 천천히 생각해 보려고 해요.", mine: false },
-        { id: "seed-2", author: "민준", content: "같은 문장을 읽어도 서로 다른 마음이 남는다는 게 재미있어요.", mine: false }
-      ],
-      "0:1": [{ id: "seed-3", author: "해나", content: "내가 지나친 문장에 누군가 머물렀다는 사실이 책을 다시 보게 해요.", mine: false }]
-    },
-    night: {
-      "0:0": [{ id: "seed-4", author: "유진", content: "짧은 문장 하나를 함께 나누니 혼자 읽을 때보다 오래 남네요.", mine: false }]
-    }
-  });
+  const BOOK_COMMENT_SEEDS = {
+    "1984": [
+      "열세 시라는 한 단어만으로 세계가 낯설어졌어요.",
+      "감시가 특별한 사건이 아니라 일상의 배경처럼 놓여 있어서 더 불편해요.",
+      "윈스턴의 작은 선택들이 왜 이렇게 큰 저항처럼 느껴질까요.",
+      "두려움이 행동뿐 아니라 생각까지 바꾼다는 점이 오래 남아요."
+    ],
+    "old-man-and-the-sea": [
+      "노인의 눈만은 늙지 않았다는 묘사가 오래 남아요.",
+      "소년과 노인의 믿음은 설명보다 행동에서 더 선명하게 보여요.",
+      "바다를 이겨야 할 적이 아니라 함께 견뎌야 할 존재로 보는 시선이 인상적이에요.",
+      "결과보다 끝까지 버틴 시간이 이 사람을 설명하는 것 같아요."
+    ],
+    demian: [
+      "자기 자신에게 이르는 길이라는 문장이 책 전체의 문처럼 느껴져요.",
+      "밝은 세계와 어두운 세계를 나누려는 마음이 오히려 더 불안하게 보여요.",
+      "익숙한 기준을 의심하게 만드는 대화가 흥미로워요.",
+      "성장한다는 건 자기 안의 목소리를 외면하지 않는 일일까요."
+    ],
+    "no-longer-human": [
+      "사진을 바라보는 시선만으로 인물과 멀어지는 느낌이 들어요.",
+      "웃음이 친밀함보다 자신을 숨기는 방법처럼 읽혀서 서늘해요.",
+      "타인의 기대에 맞출수록 자기 모습은 더 흐려지는 것 같아요.",
+      "고백처럼 들리지만 끝내 닿을 수 없는 거리감이 남아요."
+    ],
+    "pride-and-prejudice": [
+      "첫 문장이 사회의 규칙을 농담처럼 드러내는 방식이 재치 있어요.",
+      "첫인상이 얼마나 빠르게 판단으로 굳어지는지 보게 돼요.",
+      "말보다 침묵과 오해가 관계를 더 크게 움직이는 것 같아요.",
+      "상대가 아니라 자신의 시선을 고쳐 보는 과정처럼 읽혀요."
+    ],
+    metamorphosis: [
+      "엄청난 변화보다 출근 걱정을 먼저 하는 모습이 더 충격적이에요.",
+      "가족의 걱정과 필요가 뒤섞이는 순간이 불편하게 현실적이에요.",
+      "방이라는 익숙한 공간이 점점 경계처럼 느껴져요.",
+      "누가 괴물인지 쉽게 말할 수 없게 만드는 장면이에요."
+    ],
+    "sherlock-holmes": [
+      "관찰한 사실과 해석을 구분하는 태도가 흥미로워요.",
+      "사소해 보인 단서가 전혀 다른 이야기를 열어 가네요.",
+      "홈즈의 확신보다 왓슨의 놀람을 따라갈 때 더 재미있어요.",
+      "사건이 풀린 뒤에도 인물의 선택은 단순히 정리되지 않는 것 같아요."
+    ],
+    "the-great-gatsby": [
+      "타인을 판단하지 말라는 충고가 앞으로의 시선을 미리 흔드는 것 같아요.",
+      "화려한 풍경일수록 그 안의 고독이 더 선명하게 느껴져요.",
+      "개츠비가 바라보는 빛은 희망과 집착 사이 어딘가에 있는 것 같아요.",
+      "과거를 되돌리려는 마음이 현재를 얼마나 멀리 밀어내는지 생각하게 돼요."
+    ],
+    "alice-in-wonderland": [
+      "아무렇지 않게 이상한 일을 따라가는 호기심이 이야기를 움직여요.",
+      "몸의 크기가 바뀔 때마다 자신을 보는 기준도 흔들리는 것 같아요.",
+      "논리가 무너진 세계인데도 이상하게 익숙한 규칙들이 보여요.",
+      "질문을 멈추지 않는 태도가 앨리스를 계속 앞으로 데려가네요."
+    ],
+    "jekyll-and-hyde": [
+      "단정한 겉모습과 낡은 문이 한 사람의 두 얼굴처럼 대비돼요.",
+      "설명되지 않는 불쾌감이 단서보다 먼저 다가오는 장면이에요.",
+      "선과 악을 나누려는 욕망 자체가 더 위험해 보이기 시작해요.",
+      "숨기려 할수록 두 인격이 더 단단히 묶이는 역설이 느껴져요."
+    ]
+  };
+
+  const COMMENT_POSITIONS = [
+    { chapterIndex: 0, ratio: 0.08 },
+    { chapterIndex: 0, ratio: 0.58 },
+    { chapterIndex: 1, ratio: 0.32 },
+    { chapterIndex: 1, ratio: 0.78 }
+  ];
+
+  function seedComments(book) {
+    const seeded = Object.fromEntries(CLUBS.map((club) => [club.id, {}]));
+    const club = CLUBS.find((item) => item.bookIds.includes(book.id));
+    const contents = BOOK_COMMENT_SEEDS[book.id];
+    if (!club || !contents) return seeded;
+
+    const authors = club.members.filter((name) => name !== "나");
+    COMMENT_POSITIONS.forEach(({ chapterIndex, ratio }, index) => {
+      const passages = book.chapters[chapterIndex]?.passages || [];
+      if (!passages.length || !contents[index]) return;
+      const passageIndex = Math.round((passages.length - 1) * ratio);
+      const key = `${chapterIndex}:${passageIndex}`;
+      seeded[club.id][key] = [{
+        id: `seed-${book.id}-${chapterIndex}-${passageIndex}`,
+        author: authors[index % authors.length] || "함께 읽는 사람",
+        content: contents[index],
+        mine: false
+      }];
+    });
+    return seeded;
+  }
 
   function booksForClub(club, books) {
     const curatedBooks = books.filter((book) => club.bookIds.includes(book.id));
@@ -80,7 +159,7 @@
       selectedPassage: null,
       progressByBook,
       fontSize: 19,
-      comments: Object.fromEntries(books.map((item) => [item.id, seedComments()])),
+      comments: Object.fromEntries(books.map((item) => [item.id, seedComments(item)])),
       editingId: null,
       nextCommentId: 1,
       panelOpen: false

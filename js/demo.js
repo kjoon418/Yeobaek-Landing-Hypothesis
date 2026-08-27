@@ -529,8 +529,13 @@
     elements.clubList.replaceChildren(...CLUBS.map((item) => {
       const button = makeButton("club-button", "", "select-club", { clubId: item.id });
       button.setAttribute("aria-current", String(item.id === state.clubId));
-      const icon = document.createElement("span"); icon.className = "club-icon"; icon.textContent = item.icon;
-      const copy = document.createElement("span");
+      const icon = document.createElement("span");
+      icon.className = "club-icon";
+      icon.setAttribute("aria-hidden", "true");
+      const selectedBook = state.books.find((book) => book.id === state.selectedBookByClub[item.id]);
+      if (selectedBook) renderBookCover(icon, selectedBook, { lazy: true });
+      else icon.textContent = item.icon;
+      const copy = document.createElement("span"); copy.className = "club-copy";
       const strong = document.createElement("strong"); strong.textContent = item.name;
       const detail = document.createElement("span"); detail.textContent = `${item.members.length}명이 함께 읽는 중`;
       copy.append(strong, detail); button.append(icon, copy); return button;

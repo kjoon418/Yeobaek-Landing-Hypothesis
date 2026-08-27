@@ -1,0 +1,42 @@
+{
+  "1984": {
+    "variant": "G",
+    "file": "/images/covers/1984.png"
+  },
+  "demian": {
+    "variant": "A",
+    "file": "/images/covers/demian.png"
+  },
+  "metamorphosis": {
+    "variant": "F",
+    "file": "/images/covers/metamorphosis.png"
+  },
+  "old-man-and-the-sea": {
+    "variant": "A",
+    "file": "/images/covers/old-man-and-the-sea.png"
+  },
+  "sherlock-holmes": {
+    "variant": "A",
+    "file": "/images/covers/sherlock-holmes.png"
+  },
+  "the-great-gatsby": {
+    "variant": "A",
+    "file": "/images/covers/the-great-gatsby.png"
+  },
+  "no-longer-human": {
+    "variant": "A",
+    "file": "/images/covers/no-longer-human.png"
+  },
+  "pride-and-prejudice": {
+    "variant": "G",
+    "file": "/images/covers/pride-and-prejudice.png"
+  },
+  "alice-in-wonderland": {
+    "variant": "A",
+    "file": "/images/covers/alice-in-wonderland.png"
+  },
+  "jekyll-and-hyde": {
+    "variant": "G",
+    "file": "/images/covers/jekyll-and-hyde.png"
+  }
+}

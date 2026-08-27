@@ -147,6 +147,7 @@
       publisher: String(raw.publisher || "출판사 미상"),
       publishedYear: raw.publishedYear ? String(raw.publishedYear) : "",
       authors: authors.length ? authors : ["작자 미상"],
+      cover: bookId === "fallback" ? "" : `/images/covers/${encodeURIComponent(bookId)}.png`,
       chapters
     };
   }
@@ -159,6 +160,27 @@
     button.dataset.action = action;
     Object.entries(dataset).forEach(([key, value]) => { button.dataset[key] = value; });
     return button;
+  }
+
+  function renderBookCover(container, book, { lazy = false } = {}) {
+    container.replaceChildren();
+    container.classList.remove("has-image");
+    if (!book.cover) {
+      container.textContent = book.title;
+      return;
+    }
+
+    const image = document.createElement("img");
+    image.src = book.cover;
+    image.alt = "";
+    image.decoding = "async";
+    image.loading = lazy ? "lazy" : "eager";
+    image.addEventListener("error", () => {
+      container.classList.remove("has-image");
+      container.textContent = book.title;
+    }, { once: true });
+    container.classList.add("has-image");
+    container.append(image);
   }
 
   function commentKey(chapterIndex = state.chapterIndex, passageIndex = state.selectedPassage) {
@@ -328,7 +350,7 @@
     elements.memberStack.replaceChildren(...club.members.map((name) => {
       const avatar = document.createElement("span"); avatar.className = "member-avatar"; avatar.textContent = name.slice(0, 1); avatar.title = name; return avatar;
     }));
-    elements.bookCover.textContent = state.book.title;
+    renderBookCover(elements.bookCover, state.book);
     elements.bookTitle.textContent = state.book.title;
     elements.bookMeta.textContent = `${state.book.authors.join(", ")} · ${state.book.publisher}${state.book.publishedYear ? ` · ${state.book.publishedYear}` : ""}`;
     elements.homeProgressText.textContent = `${currentProgress()}%`;
@@ -344,7 +366,7 @@
       const button = makeButton("book-choice", "", "select-book", { bookId: book.id });
       button.setAttribute("aria-current", String(book.id === state.bookId));
       button.setAttribute("aria-label", `${book.title}, ${book.authors.join(", ")} 선택`);
-      const cover = document.createElement("span"); cover.className = "book-choice-cover"; cover.textContent = book.title;
+      const cover = document.createElement("span"); cover.className = "book-choice-cover"; renderBookCover(cover, book, { lazy: true });
       const title = document.createElement("strong"); title.textContent = book.title;
       const author = document.createElement("span"); author.textContent = book.authors.join(", ");
       button.append(cover, title, author);
@@ -369,7 +391,7 @@
 
   function renderReader() {
     const chapter = state.book.chapters[state.chapterIndex];
-    elements.readerCover.textContent = "";
+    renderBookCover(elements.readerCover, state.book);
     elements.readerBookTitle.textContent = state.book.title;
     elements.readerBookAuthor.textContent = state.book.authors.join(", ");
     elements.chapterList.replaceChildren(...state.book.chapters.map((item, index) => {

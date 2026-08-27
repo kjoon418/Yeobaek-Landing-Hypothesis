@@ -45,6 +45,12 @@
     { symbol: "03", kicker: "서로의 시선을 만나고", title: "다른 사람의 생각도 발견해요", description: "같은 문장을 읽은 사람들의 생각을 확인하며, 혼자 읽을 때와는 다른 이야기를 만나보세요." }
   ];
 
+  const WAITLIST_ERROR_MESSAGES = {
+    INVALID_REQUEST: "입력한 이메일 주소를 다시 확인해 주세요.",
+    PRE_REGISTRATION_ALREADY_EXISTS: "이미 사전신청한 이메일이에요. 여백이 출시되면 알려드릴게요.",
+    RATE_LIMIT_EXCEEDED: "신청이 잠시 몰리고 있어요. 잠시 후 다시 시도해 주세요."
+  };
+
   const BOOK_COMMENT_SEEDS = {
     "1984": [
       "열세 시라는 한 단어만으로 세계가 낯설어졌어요.",
@@ -203,7 +209,7 @@
     tutorialDescription: $("#tutorial-description"), tutorialStatus: $("#tutorial-step-status"), tutorialDots: $("#tutorial-dots"),
     tutorialPrevious: $("#tutorial-previous"), tutorialNext: $("#tutorial-next"),
     waitlistBackdrop: $("#waitlist-backdrop"), waitlistDialog: $("#waitlist-dialog"), waitlistForm: $("#waitlist-form"),
-    waitlistEmail: $("#waitlist-email"), waitlistPrivacyConsent: $("#waitlist-privacy-consent"), waitlistOverseasConsent: $("#waitlist-overseas-consent"),
+    waitlistEmail: $("#waitlist-email"), waitlistPrivacyConsent: $("#waitlist-privacy-consent"),
     waitlistSubmit: $("#waitlist-submit"), waitlistStatus: $("#waitlist-status"),
     waitlistSuccess: $("#waitlist-success"), toast: $("#toast")
   };
@@ -462,7 +468,6 @@
     elements.waitlistSuccess.hidden = true;
     elements.waitlistEmail.removeAttribute("aria-invalid");
     elements.waitlistPrivacyConsent.removeAttribute("aria-invalid");
-    elements.waitlistOverseasConsent.removeAttribute("aria-invalid");
     elements.waitlistStatus.textContent = "";
     elements.waitlistSubmit.disabled = false;
     elements.waitlistSubmit.textContent = "사전신청하기";
@@ -840,11 +845,9 @@
     elements.waitlistStatus.textContent = "";
   });
 
-  [elements.waitlistPrivacyConsent, elements.waitlistOverseasConsent].forEach((checkbox) => {
-    checkbox.addEventListener("change", () => {
-      checkbox.removeAttribute("aria-invalid");
-      elements.waitlistStatus.textContent = "";
-    });
+  elements.waitlistPrivacyConsent.addEventListener("change", () => {
+    elements.waitlistPrivacyConsent.removeAttribute("aria-invalid");
+    elements.waitlistStatus.textContent = "";
   });
 
   elements.waitlistForm.addEventListener("submit", async (event) => {
@@ -857,11 +860,10 @@
       elements.waitlistEmail.focus();
       return;
     }
-    const missingConsent = [elements.waitlistPrivacyConsent, elements.waitlistOverseasConsent].find((checkbox) => !checkbox.checked);
-    if (missingConsent) {
-      missingConsent.setAttribute("aria-invalid", "true");
+    if (!elements.waitlistPrivacyConsent.checked) {
+      elements.waitlistPrivacyConsent.setAttribute("aria-invalid", "true");
       elements.waitlistStatus.textContent = "필수 동의 항목을 확인해 주세요.";
-      missingConsent.focus();
+      elements.waitlistPrivacyConsent.focus();
       return;
     }
 
@@ -881,26 +883,28 @@
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
-          email: elements.waitlistEmail.value.trim(),
-          privacy_consent: "동의",
-          overseas_consent: "동의"
+          email: elements.waitlistEmail.value.trim().toLowerCase()
         }),
         signal: controller.signal
       });
       if (requestToken !== waitlistRequestToken || !waitlistOpen) return;
-      if (response.status === 429) {
-        throw new Error("RATE_LIMIT");
+      if (!response.ok) {
+        let errorCode = "";
+        try {
+          errorCode = String((await response.json())?.code || "");
+        } catch {
+          errorCode = `HTTP_${response.status}`;
+        }
+        throw new Error(errorCode || `HTTP_${response.status}`);
       }
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       elements.waitlistForm.hidden = true;
       elements.waitlistSuccess.hidden = false;
       requestAnimationFrame(() => elements.waitlistSuccess.querySelector("button")?.focus());
     } catch (error) {
       if (requestToken !== waitlistRequestToken || error.name === "AbortError" || !waitlistOpen) return;
       console.error("사전신청 전송에 실패했습니다.", error);
-      elements.waitlistStatus.textContent = error.message === "RATE_LIMIT"
-        ? "신청이 잠시 몰리고 있어요. 잠시 후 다시 시도해 주세요."
-        : "전송하지 못했어요. 잠시 후 다시 시도해 주세요.";
+      elements.waitlistStatus.textContent = WAITLIST_ERROR_MESSAGES[error.message]
+        || "전송하지 못했어요. 잠시 후 다시 시도해 주세요.";
       elements.waitlistSubmit.disabled = false;
       elements.waitlistSubmit.textContent = "다시 시도하기";
     } finally {

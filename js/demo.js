@@ -30,6 +30,15 @@
     }
   ];
 
+  const PROFILE_IMAGES = {
+    "나": "/images/avatars/me.jpg",
+    "소연": "/images/avatars/soyeon.jpg",
+    "민준": "/images/avatars/minjun.jpg",
+    "해나": "/images/avatars/haena.jpg",
+    "유진": "/images/avatars/yujin.jpg",
+    "정우": "/images/avatars/jeongwoo.jpg"
+  };
+
   const TUTORIAL_STEPS = [
     { symbol: "01", kicker: "마음 가는 책을 고르고", title: "원하는 책을 펼쳐보세요", description: "지금 읽고 싶은 책을 선택하면 곧바로 이야기를 시작할 수 있어요." },
     { symbol: "02", kicker: "문장에 머물고", title: "읽으며 내 생각을 남겨요", description: "마음에 남는 문단을 선택해, 그 순간 떠오른 생각을 여백에 기록해 보세요." },
@@ -247,6 +256,30 @@
     button.dataset.action = action;
     Object.entries(dataset).forEach(([key, value]) => { button.dataset[key] = value; });
     return button;
+  }
+
+  function createAvatar(name, className, { decorative = false } = {}) {
+    const avatar = document.createElement("span");
+    avatar.className = className;
+    avatar.textContent = name.slice(0, 1);
+    if (decorative) {
+      avatar.setAttribute("aria-hidden", "true");
+    } else {
+      avatar.setAttribute("role", "img");
+      avatar.setAttribute("aria-label", `${name} 프로필 사진`);
+      avatar.title = name;
+    }
+
+    const imageSrc = PROFILE_IMAGES[name];
+    if (!imageSrc) return avatar;
+
+    const image = document.createElement("img");
+    image.src = imageSrc;
+    image.alt = "";
+    image.decoding = "async";
+    image.addEventListener("error", () => image.remove(), { once: true });
+    avatar.append(image);
+    return avatar;
   }
 
   function renderBookCover(container, book, { lazy = false } = {}) {
@@ -506,7 +539,7 @@
     elements.clubTitle.textContent = club.name;
     elements.clubDescription.textContent = club.description;
     elements.memberStack.replaceChildren(...club.members.map((name) => {
-      const avatar = document.createElement("span"); avatar.className = "member-avatar"; avatar.textContent = name.slice(0, 1); avatar.title = name; return avatar;
+      return createAvatar(name, "member-avatar");
     }));
     renderBookCover(elements.bookCover, state.book);
     elements.bookTitle.textContent = state.book.title;
@@ -601,7 +634,7 @@
         const article = document.createElement("article"); article.className = "comment"; article.dataset.commentId = comment.id;
         const top = document.createElement("div"); top.className = "comment-top";
         const author = document.createElement("div"); author.className = "comment-author";
-        const avatar = document.createElement("span"); avatar.className = "tiny-avatar"; avatar.textContent = comment.author.slice(0, 1);
+        const avatar = createAvatar(comment.mine ? "나" : comment.author, "tiny-avatar", { decorative: true });
         const name = document.createElement("span"); name.textContent = comment.mine ? "나" : comment.author; author.append(avatar, name); top.append(author);
         if (comment.mine) {
           const actions = document.createElement("div"); actions.className = "comment-actions";

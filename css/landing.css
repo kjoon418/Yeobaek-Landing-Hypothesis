@@ -89,7 +89,7 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .club-heading h1 { margin: 8px 0 6px; font-family: var(--brand); font-size: clamp(30px, 4vw, 44px); letter-spacing: -.04em; }
 .club-description { max-width: 620px; margin: 0; color: var(--muted); line-height: 1.7; }
 .member-stack { display: flex; flex-direction: row-reverse; justify-content: flex-end; padding-left: 12px; }
-.member-avatar { width: 38px; height: 38px; margin-left: -12px; display: grid; place-items: center; border: 3px solid var(--paper); border-radius: 50%; background: var(--highlight); font-size: 12px; font-weight: 750; }
+.member-avatar { width: 38px; height: 38px; margin-left: -12px; display: grid; place-items: center; overflow: hidden; position: relative; border: 3px solid var(--paper); border-radius: 50%; background: var(--highlight); font-size: 12px; font-weight: 750; }
 .member-avatar:nth-child(even) { background: #ded9cf; }
 .reading-card { margin-top: 36px; padding: 32px; display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 36px; align-items: center; border: 1px solid var(--line); border-radius: 24px; background: var(--surface); }
 .book-cover { aspect-ratio: 2 / 3; padding: 18px; border-radius: 5px 14px 14px 5px; overflow: hidden; background: var(--ink); color: var(--paper); display: flex; align-items: flex-end; box-shadow: 10px 10px 0 var(--highlight); font-family: var(--reader); font-size: 19px; line-height: 1.45; word-break: keep-all; }
@@ -175,7 +175,8 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 }
 .comment-top { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
 .comment-author { display: flex; gap: 8px; align-items: center; font-size: 13px; font-weight: 750; }
-.tiny-avatar { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; background: var(--highlight); font-size: 10px; }
+.tiny-avatar { width: 26px; height: 26px; display: grid; place-items: center; overflow: hidden; position: relative; border-radius: 50%; background: var(--highlight); font-size: 10px; }
+.member-avatar img, .tiny-avatar img { width: 100%; height: 100%; display: block; position: absolute; inset: 0; object-fit: cover; }
 .comment-actions { display: flex; }
 .comment-actions button { min-width: 40px; min-height: 36px; border: 0; background: none; color: var(--muted); font-size: 11px; }
 .comment p { margin: 10px 0 0; font-size: 14px; line-height: 1.7; white-space: pre-wrap; }

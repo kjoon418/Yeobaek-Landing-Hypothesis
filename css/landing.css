@@ -64,7 +64,7 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .button-primary:disabled { cursor: not-allowed; opacity: .42; }
 .button-ghost { background: transparent; border-color: #d8cec3; }
 .button-small { min-height: 40px; padding-inline: 15px; }
-.waitlist-cta { min-height: 42px; padding-inline: 17px; }
+.waitlist-cta { min-height: 48px; padding-inline: 22px; font-weight: 750; }
 
 .loading-state { min-height: calc(100dvh - 72px); display: flex; gap: 12px; align-items: center; justify-content: center; color: var(--muted); }
 .loading-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); animation: breathe 1s ease-in-out infinite alternate; }
@@ -168,6 +168,11 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .comment-list { flex: 1; min-height: 120px; overflow: auto; padding-right: 3px; }
 .comment-empty { padding: 24px 0; color: var(--muted); font-size: 13px; line-height: 1.7; text-align: center; }
 .comment { padding: 15px 0; border-bottom: 1px solid var(--line); }
+.comment.is-targeted { animation: comment-highlight 1800ms ease-out; }
+@keyframes comment-highlight {
+  from { background: var(--highlight); box-shadow: 0 0 0 8px var(--highlight); }
+  to { background: transparent; box-shadow: 0 0 0 0 transparent; }
+}
 .comment-top { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
 .comment-author { display: flex; gap: 8px; align-items: center; font-size: 13px; font-weight: 750; }
 .tiny-avatar { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; background: var(--highlight); font-size: 10px; }
@@ -248,7 +253,7 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
   .topbar { height: 62px; padding: 0 16px; }
   .brand-copy, .session-note { display: none; }
   .button-ghost { min-height: 40px; padding-inline: 12px; font-size: 12px; }
-  .waitlist-cta { min-height: 40px; padding-inline: 14px; font-size: 12px; }
+  .waitlist-cta { min-height: 44px; padding-inline: 16px; font-size: 13px; }
   .home-view { min-height: calc(100dvh - 62px); grid-template-columns: 1fr; }
   .club-nav { padding: 18px 16px 0; border: 0; background: var(--paper); display: block; }
   .nav-heading { padding: 0 0 10px; }

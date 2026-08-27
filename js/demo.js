@@ -538,7 +538,7 @@
     elements.activityList.replaceChildren(...activities.map(({ key, comment }) => {
       const [chapterIndex, passageIndex] = key.split(":").map(Number);
       const passage = state.book.chapters[chapterIndex]?.passages[passageIndex];
-      const button = makeButton("activity-card", "", "open-activity", { chapterIndex, passageIndex });
+      const button = makeButton("activity-card", "", "open-activity", { chapterIndex, passageIndex, commentId: comment.id });
       const quote = document.createElement("blockquote"); quote.textContent = passage?.content || "함께 읽은 문장";
       const meta = document.createElement("div"); meta.className = "activity-meta";
       const author = document.createElement("span"); author.textContent = `${comment.author}의 댓글`;
@@ -598,7 +598,7 @@
       const empty = document.createElement("p"); empty.className = "comment-empty"; empty.textContent = "아직 댓글이 없어요. 이 문장에 첫 생각을 남겨 보세요."; elements.commentList.append(empty);
     } else {
       comments.forEach((comment) => {
-        const article = document.createElement("article"); article.className = "comment";
+        const article = document.createElement("article"); article.className = "comment"; article.dataset.commentId = comment.id;
         const top = document.createElement("div"); top.className = "comment-top";
         const author = document.createElement("div"); author.className = "comment-author";
         const avatar = document.createElement("span"); avatar.className = "tiny-avatar"; avatar.textContent = comment.author.slice(0, 1);
@@ -621,16 +621,35 @@
     if (isHome) renderHome(); else renderReader();
   }
 
-  function openReader(chapterIndex = state.chapterIndex, passageIndex = null) {
+  function revealActivity(passageIndex, commentId) {
+    const passage = document.querySelector(`[data-action="select-passage"][data-passage-index="${passageIndex}"]`);
+    if (!passage) return;
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    passage.scrollIntoView({ block: "center", behavior: reducedMotion ? "auto" : "smooth" });
+    passage.focus({ preventScroll: true });
+
+    const comment = [...elements.commentList.querySelectorAll(".comment")]
+      .find((item) => item.dataset.commentId === commentId);
+    if (!comment) return;
+    comment.classList.add("is-targeted");
+    elements.commentList.scrollTop = Math.max(0, comment.offsetTop - elements.commentList.clientHeight / 3);
+    window.setTimeout(() => comment.classList.remove("is-targeted"), reducedMotion ? 0 : 1800);
+  }
+
+  function openReader(chapterIndex = state.chapterIndex, passageIndex = null, commentId = null) {
     state.view = "reader";
     state.chapterIndex = chapterIndex;
     state.selectedPassage = Number.isInteger(passageIndex) ? passageIndex : null;
     state.panelOpen = Number.isInteger(passageIndex);
     renderView();
     updatePanel();
-    setTimeout(() => elements.chapterTitle.focus(), 0);
-    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
+    if (Number.isInteger(passageIndex)) {
+      requestAnimationFrame(() => requestAnimationFrame(() => revealActivity(passageIndex, commentId)));
+    } else {
+      setTimeout(() => elements.chapterTitle.focus(), 0);
+      const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
+    }
   }
 
   function updatePanel() {
@@ -713,7 +732,7 @@
       return;
     }
     if (action === "start-reading") openReader();
-    if (action === "open-activity") openReader(Number(target.dataset.chapterIndex), Number(target.dataset.passageIndex));
+    if (action === "open-activity") openReader(Number(target.dataset.chapterIndex), Number(target.dataset.passageIndex), target.dataset.commentId);
     if (action === "select-chapter") {
       state.chapterIndex = Number(target.dataset.chapterIndex); state.selectedPassage = null; state.panelOpen = false;
       resetForm(); updatePanel(); renderReader(); scrollToChapterStart(); setTimeout(() => elements.chapterTitle.focus(), 0);

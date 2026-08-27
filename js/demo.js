@@ -109,7 +109,7 @@
   };
 
   const COMMENT_POSITIONS = [
-    { chapterIndex: 0, ratio: 0.08 },
+    { chapterIndex: 0, ratio: 0 },
     { chapterIndex: 0, ratio: 0.58 },
     { chapterIndex: 1, ratio: 0.32 },
     { chapterIndex: 1, ratio: 0.78 }

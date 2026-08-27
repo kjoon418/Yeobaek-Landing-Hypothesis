@@ -4,8 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="함께 읽고, 문단에서 대화하는 여백의 브라우저 데모">
+  <meta name="waitlist-endpoint" content="https://formspree.io/f/xeaqjkvp">
   <title>여백 — 함께 읽는 독서 모임</title>
-  <link rel="stylesheet" href="/css/landing.css?v=20260824">
+  <link rel="icon" type="image/png" sizes="256x256" href="/images/app-icon.png">
+  <link rel="stylesheet" href="/css/landing.css?v=20260827">
 </head>
 <body>
   <div id="app" class="app-shell" data-view="home">
@@ -15,8 +17,8 @@
         <span class="brand-copy">함께 읽는 문장들</span>
       </button>
       <div class="topbar-actions">
-        <span class="session-note">새로고침하면 체험 기록이 초기화돼요</span>
-        <button class="button button-ghost" type="button" data-action="reset-demo">데모 초기화</button>
+        <span class="session-note">앱스토어 출시 예정</span>
+        <button class="button button-primary waitlist-cta" type="button" data-action="open-waitlist">사전신청하기</button>
       </div>
     </header>
 
@@ -162,6 +164,48 @@
       <button id="panel-scrim" class="panel-scrim" type="button" data-action="close-comments" aria-label="댓글 배경 닫기" tabindex="-1"></button>
     </main>
 
+    <div id="waitlist-backdrop" class="waitlist-backdrop" hidden>
+      <section id="waitlist-dialog" class="waitlist-dialog" role="dialog" aria-modal="true" aria-labelledby="waitlist-title" aria-describedby="waitlist-description waitlist-privacy" tabindex="-1">
+        <button class="icon-button waitlist-close" type="button" data-action="close-waitlist" aria-label="사전신청 창 닫기">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+        <img class="waitlist-app-icon" src="/images/app-icon.png" width="112" height="112" alt="여백 앱 아이콘">
+        <p class="eyebrow">곧 앱스토어에서 만나요</p>
+        <h2 id="waitlist-title">여백을 가장 먼저 만나보세요</h2>
+        <p id="waitlist-description" class="waitlist-description">지금 사전신청하면 출시 소식과 함께 누구보다 빠르게 이용할 수 있어요.</p>
+
+        <form id="waitlist-form" class="waitlist-form" novalidate>
+          <label class="waitlist-email-label" for="waitlist-email">이메일</label>
+          <div class="waitlist-field-row">
+            <input id="waitlist-email" name="email" type="email" required autocomplete="email" maxlength="254" inputmode="email" placeholder="name@example.com" aria-describedby="waitlist-privacy waitlist-status">
+            <button id="waitlist-submit" class="button button-primary" type="submit">사전신청하기</button>
+          </div>
+          <label class="waitlist-consent" for="waitlist-privacy-consent">
+            <input id="waitlist-privacy-consent" name="privacy_consent" type="checkbox" required>
+            <span><strong>개인정보 수집·이용에 동의해요. (필수)</strong></span>
+          </label>
+          <label class="waitlist-consent" for="waitlist-overseas-consent">
+            <input id="waitlist-overseas-consent" name="overseas_consent" type="checkbox" required>
+            <span><strong>개인정보 국외 이전에 동의해요. (필수)</strong></span>
+          </label>
+          <details id="waitlist-privacy" class="waitlist-privacy" open>
+            <summary>자세히 보기</summary>
+            <p><strong>수집·이용:</strong> 이메일 주소 · 여백 앱 출시 및 사전신청 안내 · 출시 안내 발송 후 30일 또는 동의 철회 시까지</p>
+            <p><strong>국외 이전:</strong> 이메일 주소 · 미국 Formspree, Inc. (security@formspree.io) · 제출 시 TLS 암호화 전송 · 접수 저장 및 알림 전달 · 전송 후 30일</p>
+            <p>각 동의를 거부할 수 있지만, 동의하지 않으면 사전신청을 할 수 없습니다.</p>
+          </details>
+          <p id="waitlist-status" class="waitlist-status" role="status" aria-live="polite"></p>
+        </form>
+
+        <div id="waitlist-success" class="waitlist-success" role="status" aria-live="polite" hidden>
+          <span class="waitlist-success-mark" aria-hidden="true">✓</span>
+          <h3>사전신청이 완료됐어요</h3>
+          <p>여백이 출시되면 가장 먼저 알려드릴게요.</p>
+          <button class="button button-primary" type="button" data-action="close-waitlist">확인</button>
+        </div>
+      </section>
+    </div>
+
     <div id="tutorial-backdrop" class="tutorial-backdrop" hidden>
       <section id="tutorial-dialog" class="tutorial-dialog" role="dialog" aria-modal="true" aria-labelledby="tutorial-title" aria-describedby="tutorial-description" tabindex="-1">
         <button id="tutorial-skip" class="tutorial-skip" type="button" data-action="tutorial-close">건너뛰기</button>
@@ -184,6 +228,6 @@
 
     <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
   </div>
-  <script src="/js/demo.js?v=20260824-8" defer></script>
+  <script src="/js/demo.js?v=20260827" defer></script>
 </body>
 </html>

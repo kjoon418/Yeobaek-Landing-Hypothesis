@@ -64,6 +64,7 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .button-primary:disabled { cursor: not-allowed; opacity: .42; }
 .button-ghost { background: transparent; border-color: #d8cec3; }
 .button-small { min-height: 40px; padding-inline: 15px; }
+.waitlist-cta { min-height: 42px; padding-inline: 17px; }
 
 .loading-state { min-height: calc(100dvh - 72px); display: flex; gap: 12px; align-items: center; justify-content: center; color: var(--muted); }
 .loading-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); animation: breathe 1s ease-in-out infinite alternate; }
@@ -179,6 +180,30 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .form-footer { margin-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 11px; }
 .form-actions { display: flex; gap: 6px; }
 .panel-scrim { display: none; }
+.waitlist-backdrop { padding: 24px; position: fixed; inset: 0; z-index: 130; display: grid; place-items: center; background: rgba(60,56,51,.5); backdrop-filter: blur(6px); }
+.waitlist-dialog { width: min(520px, 100%); max-height: calc(100dvh - 48px); overflow-y: auto; padding: 38px; border: 1px solid rgba(255,255,255,.72); border-radius: 28px; background: var(--paper); box-shadow: 0 28px 80px rgba(40,35,30,.28); position: relative; text-align: center; }
+.waitlist-close { position: absolute; top: 18px; right: 18px; }
+.waitlist-app-icon { width: 112px; height: 112px; margin: 2px auto 24px; display: block; border-radius: 28px; box-shadow: 0 14px 32px rgba(60,56,51,.16); }
+.waitlist-dialog h2 { margin: 10px 0 12px; font-family: var(--brand); font-size: clamp(27px, 5vw, 36px); letter-spacing: -.04em; word-break: keep-all; }
+.waitlist-description { max-width: 400px; margin: 0 auto; color: var(--muted); line-height: 1.75; word-break: keep-all; }
+.waitlist-form { margin-top: 28px; text-align: left; }
+.waitlist-email-label { display: block; margin-bottom: 9px; font-size: 13px; font-weight: 750; }
+.waitlist-field-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.waitlist-field-row input { width: 100%; min-width: 0; min-height: 48px; padding: 0 14px; border: 1px solid #d8cec3; border-radius: 12px; color: var(--ink); background: var(--surface); }
+.waitlist-field-row input::placeholder { color: #a49c94; }
+.waitlist-field-row input[aria-invalid="true"] { border-color: #a1493f; }
+.waitlist-consent { margin: 13px 0 0; display: flex; align-items: flex-start; gap: 9px; color: var(--ink); font-size: 12px; line-height: 1.5; cursor: pointer; }
+.waitlist-consent input { width: 16px; height: 16px; margin: 1px 0 0; flex: 0 0 auto; accent-color: var(--ink); }
+.waitlist-consent input[aria-invalid="true"] { outline: 2px solid #a1493f; outline-offset: 2px; }
+.waitlist-privacy { margin: 8px 0 0 25px; color: var(--muted); font-size: 11px; line-height: 1.55; }
+.waitlist-privacy summary { width: fit-content; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+.waitlist-privacy p { margin: 7px 0 0; }
+.waitlist-status { min-height: 20px; margin: 8px 0 0; color: #98433a; font-size: 13px; line-height: 1.5; }
+.waitlist-success { padding-top: 10px; }
+.waitlist-success-mark { width: 54px; height: 54px; margin: 0 auto 18px; border-radius: 50%; display: grid; place-items: center; background: var(--highlight); color: #5d4d3c; font-size: 25px; font-weight: 750; }
+.waitlist-success h3 { margin: 0; font-family: var(--brand); font-size: 26px; }
+.waitlist-success p { margin: 10px 0 24px; color: var(--muted); line-height: 1.65; }
+.waitlist-success .button { width: 100%; }
 .tutorial-backdrop { padding: 24px; position: fixed; inset: 0; z-index: 120; display: grid; place-items: center; background: rgba(60,56,51,.46); backdrop-filter: blur(5px); }
 .tutorial-dialog { width: min(520px, 100%); min-height: 520px; padding: 34px; border: 1px solid rgba(255,255,255,.72); border-radius: 28px; background: var(--paper); box-shadow: 0 28px 80px rgba(40,35,30,.24); position: relative; display: flex; flex-direction: column; }
 .tutorial-skip { min-height: 44px; padding: 0 8px; border: 0; background: transparent; color: var(--muted); position: absolute; top: 20px; right: 24px; font-size: 13px; }
@@ -223,6 +248,7 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
   .topbar { height: 62px; padding: 0 16px; }
   .brand-copy, .session-note { display: none; }
   .button-ghost { min-height: 40px; padding-inline: 12px; font-size: 12px; }
+  .waitlist-cta { min-height: 40px; padding-inline: 14px; font-size: 12px; }
   .home-view { min-height: calc(100dvh - 62px); grid-template-columns: 1fr; }
   .club-nav { padding: 18px 16px 0; border: 0; background: var(--paper); display: block; }
   .nav-heading { padding: 0 0 10px; }
@@ -271,6 +297,12 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
   .tutorial-dialog { min-height: min(610px, calc(100dvh - 24px)); padding: 30px 22px 22px; border-radius: 26px; }
   .tutorial-symbol { width: 112px; height: 136px; margin-top: 12px; margin-bottom: 28px; }
   .tutorial-skip { top: 14px; right: 16px; }
+  .waitlist-backdrop { padding: 12px; align-items: end; }
+  .waitlist-dialog { max-height: calc(100dvh - 24px); padding: 32px 22px 22px; border-radius: 26px; }
+  .waitlist-app-icon { width: 88px; height: 88px; margin-bottom: 20px; border-radius: 23px; }
+  .waitlist-field-row { grid-template-columns: 1fr; }
+  .waitlist-field-row .button { width: 100%; }
+  .waitlist-close { top: 12px; right: 12px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

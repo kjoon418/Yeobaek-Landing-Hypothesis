@@ -29,6 +29,7 @@ npx serve .
 - `Funnel / CommentViewed`: 기존 댓글이 있는 문단의 댓글 확인
 - `Funnel / CommentWritten`: 새 댓글 작성
 - `Funnel / WaitlistOpened`: 사전신청 모달 열기
+- `Funnel / InstagramOpened`: 여백 팀 Instagram 열기
 - `Book / Selected{BookId}`: 도서별 선택
 - `Acquisition / School{SchoolCode}`: 학교 커뮤니티별 유입
 

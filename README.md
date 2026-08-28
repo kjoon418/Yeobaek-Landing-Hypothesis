@@ -48,4 +48,6 @@ https://yeobaek-landing-hypothesis.vercel.app/?school=yonsei-university
 
 Vercel의 정적 사이트로 배포합니다. `main` 브랜치의 변경 사항을 Vercel 프로젝트에 연결해 운영할 수 있습니다.
 
+최종 선택된 도서 표지 10종은 `/cover-gallery`에서 한눈에 확인할 수 있습니다.
+
 원본은 `2026-yeobaek` 저장소의 `landing-page` 브랜치, 커밋 `cad8cc6`에서 분리했습니다.

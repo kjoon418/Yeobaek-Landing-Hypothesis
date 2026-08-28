@@ -30,12 +30,28 @@
     return true;
   }
 
+  function schoolAcquisitionEventName(search) {
+    const schoolCode = new URLSearchParams(search).get("school")?.trim() || "";
+    if (!/^[A-Za-z][A-Za-z0-9-]{1,47}$/.test(schoolCode)) return "";
+    const normalizedCode = schoolCode
+      .split("-")
+      .filter(Boolean)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+      .join("");
+    return normalizedCode ? `School${normalizedCode}` : "";
+  }
+
   window.yeobaekAnalytics = Object.freeze({
     enabled: Boolean(siteId),
     track
   });
 
   if (!siteId) return;
+
+  const schoolAcquisitionEvent = schoolAcquisitionEventName(window.location.search);
+  if (schoolAcquisitionEvent) {
+    track("Acquisition", schoolAcquisitionEvent, { oncePerSession: true });
+  }
 
   window.wcs_add = window.wcs_add || {};
   window.wcs_add.wa = siteId;

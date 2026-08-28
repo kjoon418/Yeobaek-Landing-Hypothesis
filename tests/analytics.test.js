@@ -6,11 +6,11 @@ const vm = require("node:vm");
 
 const analyticsSource = fs.readFileSync(path.join(__dirname, "..", "js", "analytics.js"), "utf8");
 
-function loadAnalytics(siteId, hostname = "example.com") {
+function loadAnalytics(siteId, hostname = "example.com", search = "") {
   let appendedScript = null;
   const window = {};
   const sessionValues = new Map();
-  window.location = { hostname };
+  window.location = { hostname, search };
   window.sessionStorage = {
     getItem: (key) => sessionValues.get(key) || null,
     setItem: (key, value) => sessionValues.set(key, value)
@@ -20,7 +20,7 @@ function loadAnalytics(siteId, hostname = "example.com") {
     createElement: () => ({ addEventListener(type, handler) { this[`on${type}`] = handler; } }),
     head: { append(script) { appendedScript = script; } }
   };
-  vm.runInNewContext(analyticsSource, { document, window });
+  vm.runInNewContext(analyticsSource, { document, URLSearchParams, window });
   return { window, getScript: () => appendedScript };
 }
 
@@ -62,4 +62,24 @@ test("같은 방문 세션의 동일 행동은 한 번만 집계한다", () => {
   const { window } = loadAnalytics("sample123");
   assert.equal(window.yeobaekAnalytics.track("Funnel", "CommentViewed", { oncePerSession: true }), true);
   assert.equal(window.yeobaekAnalytics.track("Funnel", "CommentViewed", { oncePerSession: true }), false);
+});
+
+test("학교 링크 파라미터를 학교 유입 이벤트로 전송한다", () => {
+  const { window, getScript } = loadAnalytics("sample123", "example.com", "?school=yonsei-university");
+  const events = [];
+  window.wcs = { event: (category, name) => events.push([category, name]) };
+  window.wcs_do = () => {};
+  getScript().onload();
+
+  assert.deepEqual(events, [["Acquisition", "SchoolYonseiUniversity"]]);
+});
+
+test("허용되지 않은 학교 파라미터는 이벤트로 전송하지 않는다", () => {
+  const { window, getScript } = loadAnalytics("sample123", "example.com", "?school=연세대학교");
+  const events = [];
+  window.wcs = { event: (category, name) => events.push([category, name]) };
+  window.wcs_do = () => {};
+  getScript().onload();
+
+  assert.deepEqual(events, []);
 });

@@ -30,9 +30,18 @@ npx serve .
 - `Funnel / CommentWritten`: 새 댓글 작성
 - `Funnel / WaitlistOpened`: 사전신청 모달 열기
 - `Book / Selected{BookId}`: 도서별 선택
+- `Acquisition / School{SchoolCode}`: 학교 커뮤니티별 유입
 
 이벤트에는 이메일, 댓글 내용, 사용자 이름을 포함하지 않습니다.
 동일한 방문 세션에서 같은 행동은 한 번만 집계하며, 로컬 개발 주소에서는 분석 스크립트를 실행하지 않습니다.
+
+학교 커뮤니티에 링크를 공유할 때는 다음처럼 `school` 파라미터를 추가합니다.
+
+```text
+https://yeobaek-landing-hypothesis.vercel.app/?school=yonsei-university
+```
+
+학교 코드는 영문으로 시작하는 영문·숫자·하이픈 조합을 사용합니다. 위 링크로 유입되면 네이버 애널리틱스의 이벤트 보고서에서 `Acquisition / SchoolYonseiUniversity`로 확인할 수 있습니다. 같은 방문 세션에서 링크를 여러 번 열어도 해당 학교 유입은 한 번만 집계됩니다.
 
 ## 배포
 

@@ -21,6 +21,19 @@ npx serve .
 
 사이트는 루트 경로(`/`)에 배포되며, 도서 데이터는 `data/books`에 있습니다.
 
+## 네이버 애널리틱스
+
+`index.html`의 `naver-analytics-id` 메타 태그에 네이버 애널리틱스에서 발급한 분석 ID를 설정하면 방문자와 페이지뷰가 수집됩니다. 사용자 행동은 다음 이벤트로 확인할 수 있습니다.
+
+- `Funnel / ReadingStarted`: 책 읽기 화면 진입
+- `Funnel / CommentViewed`: 기존 댓글이 있는 문단의 댓글 확인
+- `Funnel / CommentWritten`: 새 댓글 작성
+- `Funnel / WaitlistOpened`: 사전신청 모달 열기
+- `Book / Selected{BookId}`: 도서별 선택
+
+이벤트에는 이메일, 댓글 내용, 사용자 이름을 포함하지 않습니다.
+동일한 방문 세션에서 같은 행동은 한 번만 집계하며, 로컬 개발 주소에서는 분석 스크립트를 실행하지 않습니다.
+
 ## 배포
 
 Vercel의 정적 사이트로 배포합니다. `main` 브랜치의 변경 사항을 Vercel 프로젝트에 연결해 운영할 수 있습니다.

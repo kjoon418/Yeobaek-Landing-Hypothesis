@@ -51,6 +51,21 @@
     RATE_LIMIT_EXCEEDED: "신청이 잠시 몰리고 있어요. 잠시 후 다시 시도해 주세요."
   };
 
+  const analytics = window.yeobaekAnalytics || { track: () => false };
+
+  function trackBehavior(category, name) {
+    analytics.track(category, name, { oncePerSession: true });
+  }
+
+  function bookSelectionEventName(bookId) {
+    const normalizedId = String(bookId)
+      .split(/[^A-Za-z0-9]+/)
+      .filter(Boolean)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join("");
+    return `Selected${normalizedId || "Unknown"}`;
+  }
+
   const BOOK_COMMENT_SEEDS = {
     "1984": [
       "열세 시라는 한 단어만으로 세계가 낯설어졌어요.",
@@ -481,6 +496,7 @@
       updatePanel();
     }
     waitlistOpen = true;
+    trackBehavior("Funnel", "WaitlistOpened");
     waitlistReturnFocus = trigger || document.activeElement;
     resetWaitlistForm();
     elements.waitlistBackdrop.hidden = false;
@@ -680,6 +696,10 @@
   }
 
   function openReader(chapterIndex = state.chapterIndex, passageIndex = null, commentId = null) {
+    trackBehavior("Funnel", "ReadingStarted");
+    if (Number.isInteger(passageIndex) && commentsFor(chapterIndex, passageIndex).length) {
+      trackBehavior("Funnel", "CommentViewed");
+    }
     state.view = "reader";
     state.chapterIndex = chapterIndex;
     state.selectedPassage = Number.isInteger(passageIndex) ? passageIndex : null;
@@ -769,6 +789,7 @@
     if (action === "select-book") {
       const nextBookId = target.dataset.bookId;
       if (nextBookId !== state.bookId && activateBook(nextBookId)) {
+        trackBehavior("Book", bookSelectionEventName(nextBookId));
         resetForm(); updatePanel(); renderHome(); showToast(`『${state.book.title}』을 펼쳤어요.`);
         requestAnimationFrame(() => document.querySelector(`[data-action="select-book"][data-book-id="${state.bookId}"]`)?.focus());
       }
@@ -782,6 +803,7 @@
     }
     if (action === "select-passage") {
       state.selectedPassage = Number(target.dataset.passageIndex); state.panelOpen = true; resetForm(); renderReader(); updatePanel();
+      if (commentsFor(state.chapterIndex, state.selectedPassage).length) trackBehavior("Funnel", "CommentViewed");
       if (matchMedia("(max-width: 1000px)").matches) setTimeout(() => elements.input.focus(), 230);
     }
     if (action === "close-comments") closeComments();
@@ -822,6 +844,7 @@
       if (index >= 0) comments[index] = { ...comments[index], content };
     } else {
       comments.push({ id: `mine-${state.nextCommentId++}`, author: "나", content, mine: true });
+      trackBehavior("Funnel", "CommentWritten");
     }
     ensureBookInteractionState();
     state.comments[state.bookId][state.clubId][key] = comments;

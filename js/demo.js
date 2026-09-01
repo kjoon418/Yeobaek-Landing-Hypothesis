@@ -46,6 +46,8 @@
   ];
 
   const analytics = window.yeobaekAnalytics || { track: () => false };
+  const GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.yeobaek&hl=ko";
+  const INSTAGRAM_URL = "https://www.instagram.com/yeobaek.team/";
 
   function trackBehavior(category, name) {
     analytics.track(category, name, { oncePerSession: true });
@@ -199,6 +201,7 @@
   const $ = (selector) => document.querySelector(selector);
   const elements = {
     app: $("#app"), topbar: $(".topbar"), loading: $("#loading"), home: $("#home-view"), reader: $("#reader-view"),
+    appCta: $("#app-cta"), appCtaLabel: $("#app-cta-label"), appCtaNote: $("#app-cta-note"),
     clubList: $("#club-list"), clubKicker: $("#club-kicker"), clubTitle: $("#club-title"),
     clubDescription: $("#club-description"), memberStack: $("#member-stack"), bookCover: $("#book-cover"),
     bookTitle: $("#book-title"), bookMeta: $("#book-meta"), bookCatalog: $("#book-catalog"), bookCount: $("#book-count"), homeProgressText: $("#home-progress-text"),
@@ -214,6 +217,24 @@
     tutorialDescription: $("#tutorial-description"), tutorialStatus: $("#tutorial-step-status"), tutorialDots: $("#tutorial-dots"),
     tutorialPrevious: $("#tutorial-previous"), tutorialNext: $("#tutorial-next"), toast: $("#toast")
   };
+
+  function isAndroidDevice() {
+    const platform = typeof navigator.userAgentData?.platform === "string" ? navigator.userAgentData.platform : "";
+    const userAgent = typeof navigator.userAgent === "string" ? navigator.userAgent : "";
+    return /android/i.test(platform) || /android/i.test(userAgent);
+  }
+
+  function configureAppCta() {
+    if (!elements.appCta || !elements.appCtaLabel || !elements.appCtaNote) return;
+    const isAndroid = isAndroidDevice();
+    elements.appCta.href = isAndroid ? GOOGLE_PLAY_URL : INSTAGRAM_URL;
+    elements.appCta.dataset.action = isAndroid ? "open-google-play" : "open-app-store-instagram";
+    elements.appCtaLabel.textContent = isAndroid ? "앱에서 사용해보기" : "App Store 출시 소식 받기";
+    elements.appCtaNote.textContent = isAndroid ? "Google Play에서 지금 만나보세요" : "App Store에서도 곧 만나요";
+    elements.appCta.setAttribute("aria-label", isAndroid
+      ? "Google Play에서 여백 앱 사용해보기"
+      : "Instagram에서 여백의 App Store 출시 소식 받기");
+  }
 
   function normalizeBook(raw, bookId = "demo-book") {
     if (!raw || typeof raw !== "object") throw new Error("도서 데이터가 객체가 아닙니다.");
@@ -692,6 +713,7 @@
     const action = target.dataset.action;
     if (action === "open-instagram") { trackBehavior("Funnel", "InstagramOpened"); return; }
     if (action === "open-google-play") { trackBehavior("Funnel", "GooglePlayOpened"); return; }
+    if (action === "open-app-store-instagram") { trackBehavior("Funnel", "AppStoreInstagramOpened"); return; }
     if (action === "tutorial-close") { closeTutorial(); return; }
     if (action === "tutorial-previous") { moveTutorial(-1); return; }
     if (action === "tutorial-next") { moveTutorial(1); return; }
@@ -869,5 +891,6 @@
     if (usedFallback) showToast("도서 파일을 불러오지 못해 내장 샘플로 시작했어요.");
   }
 
+  configureAppCta();
   initialize();
 })();

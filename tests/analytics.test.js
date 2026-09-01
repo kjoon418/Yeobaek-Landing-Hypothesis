@@ -73,11 +73,32 @@ test("Google Play 이동은 세션당 한 번만 집계한다", () => {
   assert.match(demoSource, /open-google-play[\s\S]*GooglePlayOpened/);
 });
 
-test("상단 CTA는 사전신청 없이 Google Play 앱 페이지로 이동한다", () => {
-  assert.match(indexSource, /href="https:\/\/play\.google\.com\/store\/apps\/details\?id=com\.yeobaek&amp;hl=ko"/);
-  assert.match(indexSource, />\s*앱에서 사용해보기\s*<span/);
+test("비 Android 상단 CTA는 Instagram을 기본값으로 사용한다", () => {
+  assert.match(indexSource, /id="app-cta"[^>]*href="https:\/\/www\.instagram\.com\/yeobaek\.team\/"/);
+  assert.match(indexSource, /data-action="open-app-store-instagram"/);
+  assert.match(indexSource, /App Store 출시 소식 받기/);
   assert.match(indexSource, /Instagram을 팔로우하고 App Store 출시 소식/);
   assert.doesNotMatch(indexSource, /waitlist|사전신청|pre-registrations/i);
+});
+
+test("Android에서는 상단 CTA를 Google Play 링크와 문구로 전환한다", () => {
+  assert.match(demoSource, /navigator\.userAgentData\?\.platform/);
+  assert.match(demoSource, /navigator\.userAgent/);
+  assert.match(demoSource, /GOOGLE_PLAY_URL = "https:\/\/play\.google\.com\/store\/apps\/details\?id=com\.yeobaek&hl=ko"/);
+  assert.match(demoSource, /isAndroid \? "앱에서 사용해보기" : "App Store 출시 소식 받기"/);
+  assert.match(demoSource, /isAndroid \? "Google Play에서 지금 만나보세요" : "App Store에서도 곧 만나요"/);
+});
+
+test("App Store 출시 Instagram 이동은 별도 이벤트로 세션당 한 번만 집계한다", () => {
+  const { window } = loadAnalytics("sample123");
+  assert.equal(window.yeobaekAnalytics.track("Funnel", "AppStoreInstagramOpened", { oncePerSession: true }), true);
+  assert.equal(window.yeobaekAnalytics.track("Funnel", "AppStoreInstagramOpened", { oncePerSession: true }), false);
+  assert.match(demoSource, /open-app-store-instagram[\s\S]*AppStoreInstagramOpened/);
+});
+
+test("하단 Instagram 링크와 기존 분석 이벤트는 그대로 유지한다", () => {
+  assert.match(indexSource, /class="instagram-link"[^>]*data-action="open-instagram"/);
+  assert.match(demoSource, /open-instagram[\s\S]*InstagramOpened/);
 });
 
 test("학교 링크 파라미터를 학교 유입 이벤트로 전송한다", () => {

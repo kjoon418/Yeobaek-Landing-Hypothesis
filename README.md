@@ -10,7 +10,7 @@
 - 읽기 화면 스크롤에 따른 진도 자동 반영
 - 문장 선택과 댓글 작성 체험
 - 새로고침 시 초기화되는 의도된 비영속 데모 데이터
-- Google Play에서 정식 앱으로 바로 이동
+- Android에서는 Google Play로, 그 외 환경에서는 App Store 출시 소식을 전하는 Instagram으로 이동
 
 ## 로컬 실행
 
@@ -21,7 +21,7 @@ npx serve .
 ```
 
 사이트는 루트 경로(`/`)에 배포되며, 도서 데이터는 `data/books`에 있습니다.
-상단의 `앱에서 사용해보기` 링크는 [Google Play의 여백 앱 페이지](https://play.google.com/store/apps/details?id=com.yeobaek&hl=ko)로 이동합니다.
+상단 CTA는 브라우저가 제공하는 정보로 운영체제를 최대한 정확하게 판별합니다. Android에서는 `앱에서 사용해보기`를 표시하고 [Google Play의 여백 앱 페이지](https://play.google.com/store/apps/details?id=com.yeobaek&hl=ko)로 이동합니다. iOS·iPadOS·데스크톱을 포함한 그 외 환경에서는 `App Store 출시 소식 받기`를 표시하고 [여백 팀 Instagram](https://www.instagram.com/yeobaek.team/)으로 이동합니다. JavaScript를 사용할 수 없는 환경에서도 Instagram 링크가 기본으로 제공됩니다.
 
 ## 네이버 애널리틱스
 
@@ -31,6 +31,7 @@ npx serve .
 - `Funnel / CommentViewed`: 기존 댓글이 있는 문단의 댓글 확인
 - `Funnel / CommentWritten`: 새 댓글 작성
 - `Funnel / GooglePlayOpened`: Google Play 앱 페이지 열기
+- `Funnel / AppStoreInstagramOpened`: 비 Android 환경의 상단 CTA에서 App Store 출시 소식 확인하기
 - `Funnel / InstagramOpened`: 여백 팀 Instagram 열기
 - `Book / Selected{BookId}`: 도서별 선택
 - `Acquisition / School{SchoolCode}`: 학교 커뮤니티별 유입

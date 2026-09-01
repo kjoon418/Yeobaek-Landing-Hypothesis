@@ -10,6 +10,7 @@
 - 읽기 화면 스크롤에 따른 진도 자동 반영
 - 문장 선택과 댓글 작성 체험
 - 새로고침 시 초기화되는 의도된 비영속 데모 데이터
+- Google Play에서 정식 앱으로 바로 이동
 
 ## 로컬 실행
 
@@ -20,6 +21,7 @@ npx serve .
 ```
 
 사이트는 루트 경로(`/`)에 배포되며, 도서 데이터는 `data/books`에 있습니다.
+상단의 `앱에서 사용해보기` 링크는 [Google Play의 여백 앱 페이지](https://play.google.com/store/apps/details?id=com.yeobaek&hl=ko)로 이동합니다.
 
 ## 네이버 애널리틱스
 
@@ -28,7 +30,7 @@ npx serve .
 - `Funnel / ReadingStarted`: 책 읽기 화면 진입
 - `Funnel / CommentViewed`: 기존 댓글이 있는 문단의 댓글 확인
 - `Funnel / CommentWritten`: 새 댓글 작성
-- `Funnel / WaitlistOpened`: 사전신청 모달 열기
+- `Funnel / GooglePlayOpened`: Google Play 앱 페이지 열기
 - `Funnel / InstagramOpened`: 여백 팀 Instagram 열기
 - `Book / Selected{BookId}`: 도서별 선택
 - `Acquisition / School{SchoolCode}`: 학교 커뮤니티별 유입

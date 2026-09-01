@@ -3,23 +3,26 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="함께 읽고, 문단에서 대화하는 여백의 브라우저 데모">
-  <meta name="waitlist-endpoint" content="https://yeobaek.duckdns.org/api/pre-registrations">
+  <meta name="description" content="책을 읽으며 생각을 남기고 나누는 여백의 브라우저 데모">
   <meta name="naver-analytics-id" content="2aa97e3d61f248">
-  <title>여백 — 함께 읽는 독서 모임</title>
-  <link rel="icon" type="image/png" sizes="256x256" href="/images/app-icon.png">
-  <link rel="stylesheet" href="/css/landing.css?v=20260828-1">
+  <title>여백 — 생각이 모이는 공간</title>
+  <link rel="icon" type="image/png" sizes="512x512" href="/images/app-icon.png?v=20260901-1">
+  <link rel="stylesheet" href="/css/landing.css?v=20260901-1">
 </head>
 <body>
   <div id="app" class="app-shell" data-view="home">
     <header class="topbar">
       <button class="brand" type="button" data-action="go-home" aria-label="여백 모임 홈으로 이동">
+        <img class="brand-icon" src="/images/app-icon.png?v=20260901-1" width="36" height="36" alt="" aria-hidden="true">
         <span class="brand-mark" aria-hidden="true">여백</span>
-        <span class="brand-copy">함께 읽는 문장들</span>
+        <span class="brand-copy">생각이 모이는 공간</span>
       </button>
       <div class="topbar-actions">
-        <span class="session-note">누구보다 빨리 써보고 싶다면?</span>
-        <button class="button button-primary waitlist-cta" type="button" data-action="open-waitlist">사전신청하기</button>
+        <span class="session-note">Google Play에서 지금 만나보세요</span>
+        <a class="button button-primary app-cta" href="https://play.google.com/store/apps/details?id=com.yeobaek&amp;hl=ko" target="_blank" rel="noopener noreferrer" data-action="open-google-play" aria-label="Google Play에서 여백 앱 사용해보기">
+          앱에서 사용해보기
+          <span aria-hidden="true">↗</span>
+        </a>
       </div>
     </header>
 
@@ -90,7 +93,7 @@
         <footer class="team-proof">
           <div class="team-proof-copy">
             <strong>여백을 만드는 기록</strong>
-            <span>출시 준비 과정과 팀의 이야기를 공개하고 있어요.</span>
+            <span>Google Play에서 지금 이용할 수 있어요. Instagram을 팔로우하고 App Store 출시 소식을 가장 먼저 확인해보세요.</span>
           </div>
           <a class="instagram-link" href="https://www.instagram.com/yeobaek.team/" target="_blank" rel="noopener noreferrer" data-action="open-instagram" aria-label="Instagram에서 여백 팀의 제작 기록 보기">
             <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg>
@@ -174,49 +177,6 @@
       <button id="panel-scrim" class="panel-scrim" type="button" data-action="close-comments" aria-label="댓글 배경 닫기" tabindex="-1"></button>
     </main>
 
-    <div id="waitlist-backdrop" class="waitlist-backdrop" hidden>
-      <section id="waitlist-dialog" class="waitlist-dialog" role="dialog" aria-modal="true" aria-labelledby="waitlist-title" aria-describedby="waitlist-description waitlist-privacy" tabindex="-1">
-        <button class="icon-button waitlist-close" type="button" data-action="close-waitlist" aria-label="사전신청 창 닫기">
-          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
-        </button>
-        <img class="waitlist-app-icon" src="/images/app-icon.png" width="112" height="112" alt="여백 앱 아이콘">
-        <p class="eyebrow">곧 앱스토어에서 만나요</p>
-        <h2 id="waitlist-title">여백을 가장 먼저 만나보세요</h2>
-        <p id="waitlist-description" class="waitlist-description">지금 사전신청하면 출시 소식과 함께 누구보다 빠르게 이용할 수 있어요.</p>
-
-        <form id="waitlist-form" class="waitlist-form" novalidate>
-          <label class="waitlist-email-label" for="waitlist-email">이메일</label>
-          <div class="waitlist-field-row">
-            <input id="waitlist-email" name="email" type="email" required autocomplete="email" maxlength="254" inputmode="email" placeholder="name@example.com" aria-describedby="waitlist-privacy waitlist-status">
-            <button id="waitlist-submit" class="button button-primary" type="submit">사전신청하기</button>
-          </div>
-          <label class="waitlist-consent" for="waitlist-privacy-consent">
-            <input id="waitlist-privacy-consent" name="privacy_consent" type="checkbox" required>
-            <span><strong>개인정보 수집·이용에 동의해요. (필수)</strong></span>
-          </label>
-          <details id="waitlist-privacy" class="waitlist-privacy" open>
-            <summary>자세히 보기</summary>
-            <p><strong>수집·이용:</strong> 이메일 주소 · 여백 앱 출시 및 사전신청 안내 · 출시 안내 발송 후 30일 또는 동의 철회 시까지</p>
-            <p><strong>처리 위치:</strong> 국내 리전의 여백 서버에서 안전하게 처리합니다.</p>
-            <p>동의를 거부할 수 있지만, 동의하지 않으면 사전신청을 할 수 없습니다.</p>
-          </details>
-          <p id="waitlist-status" class="waitlist-status" role="status" aria-live="polite"></p>
-        </form>
-
-        <div id="waitlist-success" class="waitlist-success" role="status" aria-live="polite" hidden>
-          <span class="waitlist-success-mark" aria-hidden="true">✓</span>
-          <h3>사전신청이 완료됐어요</h3>
-          <p>여백이 출시되면 가장 먼저 알려드릴게요.</p>
-          <button class="button button-primary" type="button" data-action="close-waitlist">확인</button>
-        </div>
-
-        <p class="waitlist-social-proof">
-          <span>여백을 만드는 과정이 궁금하다면</span>
-          <a href="https://www.instagram.com/yeobaek.team/" target="_blank" rel="noopener noreferrer" data-action="open-instagram">@yeobaek.team에서 확인할 수 있어요 <span aria-hidden="true">↗</span></a>
-        </p>
-      </section>
-    </div>
-
     <div id="tutorial-backdrop" class="tutorial-backdrop" hidden>
       <section id="tutorial-dialog" class="tutorial-dialog" role="dialog" aria-modal="true" aria-labelledby="tutorial-title" aria-describedby="tutorial-description" tabindex="-1">
         <button id="tutorial-skip" class="tutorial-skip" type="button" data-action="tutorial-close">건너뛰기</button>
@@ -240,6 +200,6 @@
     <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
   </div>
   <script src="/js/analytics.js?v=20260828-2" defer></script>
-  <script src="/js/demo.js?v=20260828-2" defer></script>
+  <script src="/js/demo.js?v=20260901-1" defer></script>
 </body>
 </html>

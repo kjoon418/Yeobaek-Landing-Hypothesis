@@ -45,12 +45,6 @@
     { symbol: "03", kicker: "서로의 시선을 만나고", title: "다른 사람의 생각도 발견해요", description: "같은 문장을 읽은 사람들의 생각을 확인하며, 혼자 읽을 때와는 다른 이야기를 만나보세요." }
   ];
 
-  const WAITLIST_ERROR_MESSAGES = {
-    INVALID_REQUEST: "입력한 이메일 주소를 다시 확인해 주세요.",
-    PRE_REGISTRATION_ALREADY_EXISTS: "이미 사전신청한 이메일이에요. 여백이 출시되면 알려드릴게요.",
-    RATE_LIMIT_EXCEEDED: "신청이 잠시 몰리고 있어요. 잠시 후 다시 시도해 주세요."
-  };
-
   const analytics = window.yeobaekAnalytics || { track: () => false };
 
   function trackBehavior(category, name) {
@@ -200,10 +194,6 @@
   let toastTimer;
   let progressFrame;
   let tutorialOpen = false;
-  let waitlistOpen = false;
-  let waitlistReturnFocus = null;
-  let waitlistRequestController = null;
-  let waitlistRequestToken = 0;
   let tutorialStep = 0;
 
   const $ = (selector) => document.querySelector(selector);
@@ -222,11 +212,7 @@
     cancelEdit: $("#cancel-edit"), tutorialBackdrop: $("#tutorial-backdrop"), tutorialDialog: $("#tutorial-dialog"), tutorialSkip: $("#tutorial-skip"),
     tutorialSymbol: $("#tutorial-symbol"), tutorialKicker: $("#tutorial-kicker"), tutorialTitle: $("#tutorial-title"),
     tutorialDescription: $("#tutorial-description"), tutorialStatus: $("#tutorial-step-status"), tutorialDots: $("#tutorial-dots"),
-    tutorialPrevious: $("#tutorial-previous"), tutorialNext: $("#tutorial-next"),
-    waitlistBackdrop: $("#waitlist-backdrop"), waitlistDialog: $("#waitlist-dialog"), waitlistForm: $("#waitlist-form"),
-    waitlistEmail: $("#waitlist-email"), waitlistPrivacyConsent: $("#waitlist-privacy-consent"),
-    waitlistSubmit: $("#waitlist-submit"), waitlistStatus: $("#waitlist-status"),
-    waitlistSuccess: $("#waitlist-success"), toast: $("#toast")
+    tutorialPrevious: $("#tutorial-previous"), tutorialNext: $("#tutorial-next"), toast: $("#toast")
   };
 
   function normalizeBook(raw, bookId = "demo-book") {
@@ -444,7 +430,7 @@
   }
 
   function openTutorial() {
-    if (waitlistOpen || tutorialOpen) return;
+    if (tutorialOpen) return;
     tutorialOpen = true;
     tutorialStep = 0;
     renderTutorial();
@@ -461,77 +447,12 @@
   }
 
   function syncPageInteractionState() {
-    const modalOpen = tutorialOpen || waitlistOpen;
     [elements.topbar, elements.home, elements.reader].forEach((element) => {
-      if (modalOpen) element.setAttribute("inert", "");
+      if (tutorialOpen) element.setAttribute("inert", "");
       else element.removeAttribute("inert");
     });
     const compactCommentsOpen = state.panelOpen && matchMedia("(max-width: 1000px)").matches;
-    document.body.style.overflow = modalOpen || compactCommentsOpen ? "hidden" : "";
-  }
-
-  function invalidateWaitlistRequest() {
-    waitlistRequestToken += 1;
-    waitlistRequestController?.abort();
-    waitlistRequestController = null;
-  }
-
-  function resetWaitlistForm() {
-    invalidateWaitlistRequest();
-    elements.waitlistForm.reset();
-    elements.waitlistForm.hidden = false;
-    elements.waitlistSuccess.hidden = true;
-    elements.waitlistEmail.removeAttribute("aria-invalid");
-    elements.waitlistPrivacyConsent.removeAttribute("aria-invalid");
-    elements.waitlistStatus.textContent = "";
-    elements.waitlistSubmit.disabled = false;
-    elements.waitlistSubmit.textContent = "사전신청하기";
-  }
-
-  function openWaitlist(trigger) {
-    if (tutorialOpen || waitlistOpen) return;
-    if (state.panelOpen) {
-      state.panelOpen = false;
-      document.querySelector('.passage[aria-pressed="true"]')?.setAttribute("aria-expanded", "false");
-      updatePanel();
-    }
-    waitlistOpen = true;
-    trackBehavior("Funnel", "WaitlistOpened");
-    waitlistReturnFocus = trigger || document.activeElement;
-    resetWaitlistForm();
-    elements.waitlistBackdrop.hidden = false;
-    syncPageInteractionState();
-    requestAnimationFrame(() => elements.waitlistEmail.focus());
-  }
-
-  function closeWaitlist() {
-    if (!waitlistOpen) return;
-    invalidateWaitlistRequest();
-    waitlistOpen = false;
-    elements.waitlistBackdrop.hidden = true;
-    syncPageInteractionState();
-    const returnFocus = waitlistReturnFocus;
-    waitlistReturnFocus = null;
-    requestAnimationFrame(() => returnFocus?.focus());
-  }
-
-  function trapFocus(event, dialog) {
-    if (event.key !== "Tab") return;
-    const focusable = [...dialog.querySelectorAll("button:not([disabled]):not([hidden]), input:not([disabled]):not([hidden]), summary, a[href], [tabindex]:not([tabindex='-1'])")]
-      .filter((element) => !element.closest("[hidden]"));
-    if (!focusable.length) return;
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    if (!focusable.includes(document.activeElement)) {
-      event.preventDefault();
-      (event.shiftKey ? last : first).focus();
-    } else if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault();
-      first.focus();
-    }
+    document.body.style.overflow = tutorialOpen || compactCommentsOpen ? "hidden" : "";
   }
 
   function moveTutorial(direction) {
@@ -770,8 +691,7 @@
     if (!target) return;
     const action = target.dataset.action;
     if (action === "open-instagram") { trackBehavior("Funnel", "InstagramOpened"); return; }
-    if (action === "open-waitlist") { openWaitlist(target); return; }
-    if (action === "close-waitlist") { closeWaitlist(); return; }
+    if (action === "open-google-play") { trackBehavior("Funnel", "GooglePlayOpened"); return; }
     if (action === "tutorial-close") { closeTutorial(); return; }
     if (action === "tutorial-previous") { moveTutorial(-1); return; }
     if (action === "tutorial-next") { moveTutorial(1); return; }
@@ -860,92 +780,7 @@
     }
   });
 
-  elements.waitlistBackdrop.addEventListener("click", (event) => {
-    if (event.target === elements.waitlistBackdrop) closeWaitlist();
-  });
-
-  elements.waitlistEmail.addEventListener("input", () => {
-    elements.waitlistEmail.removeAttribute("aria-invalid");
-    elements.waitlistStatus.textContent = "";
-  });
-
-  elements.waitlistPrivacyConsent.addEventListener("change", () => {
-    elements.waitlistPrivacyConsent.removeAttribute("aria-invalid");
-    elements.waitlistStatus.textContent = "";
-  });
-
-  elements.waitlistForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    if (waitlistRequestController) return;
-    elements.waitlistStatus.textContent = "";
-    if (!elements.waitlistEmail.checkValidity()) {
-      elements.waitlistEmail.setAttribute("aria-invalid", "true");
-      elements.waitlistStatus.textContent = "올바른 이메일 주소를 입력해 주세요.";
-      elements.waitlistEmail.focus();
-      return;
-    }
-    if (!elements.waitlistPrivacyConsent.checked) {
-      elements.waitlistPrivacyConsent.setAttribute("aria-invalid", "true");
-      elements.waitlistStatus.textContent = "필수 동의 항목을 확인해 주세요.";
-      elements.waitlistPrivacyConsent.focus();
-      return;
-    }
-
-    const endpoint = document.querySelector('meta[name="waitlist-endpoint"]')?.content.trim();
-    if (!endpoint) {
-      elements.waitlistStatus.textContent = "사전신청 접수 연결을 준비 중이에요.";
-      return;
-    }
-
-    elements.waitlistSubmit.disabled = true;
-    elements.waitlistSubmit.textContent = "전송 중…";
-    const requestToken = ++waitlistRequestToken;
-    const controller = new AbortController();
-    waitlistRequestController = controller;
-    try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          email: elements.waitlistEmail.value.trim().toLowerCase()
-        }),
-        signal: controller.signal
-      });
-      if (requestToken !== waitlistRequestToken || !waitlistOpen) return;
-      if (!response.ok) {
-        let errorCode = "";
-        try {
-          errorCode = String((await response.json())?.code || "");
-        } catch {
-          errorCode = `HTTP_${response.status}`;
-        }
-        throw new Error(errorCode || `HTTP_${response.status}`);
-      }
-      elements.waitlistForm.hidden = true;
-      elements.waitlistSuccess.hidden = false;
-      requestAnimationFrame(() => elements.waitlistSuccess.querySelector("button")?.focus());
-    } catch (error) {
-      if (requestToken !== waitlistRequestToken || error.name === "AbortError" || !waitlistOpen) return;
-      console.error("사전신청 전송에 실패했습니다.", error);
-      elements.waitlistStatus.textContent = WAITLIST_ERROR_MESSAGES[error.message]
-        || "전송하지 못했어요. 잠시 후 다시 시도해 주세요.";
-      elements.waitlistSubmit.disabled = false;
-      elements.waitlistSubmit.textContent = "다시 시도하기";
-    } finally {
-      if (requestToken === waitlistRequestToken) waitlistRequestController = null;
-    }
-  });
-
   document.addEventListener("keydown", (event) => {
-    if (waitlistOpen) {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        closeWaitlist();
-        return;
-      }
-      trapFocus(event, elements.waitlistDialog);
-      return;
-    }
     if (tutorialOpen) {
       if (event.key === "Escape") {
         event.preventDefault();
@@ -1029,7 +864,7 @@
     elements.loading.hidden = true;
     renderView();
     requestAnimationFrame(() => {
-      if (!waitlistOpen && !tutorialOpen) openTutorial();
+      if (!tutorialOpen) openTutorial();
     });
     if (usedFallback) showToast("도서 파일을 불러오지 못해 내장 샘플로 시작했어요.");
   }

@@ -5,6 +5,8 @@ const test = require("node:test");
 const vm = require("node:vm");
 
 const analyticsSource = fs.readFileSync(path.join(__dirname, "..", "js", "analytics.js"), "utf8");
+const demoSource = fs.readFileSync(path.join(__dirname, "..", "js", "demo.js"), "utf8");
+const indexSource = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
 
 function loadAnalytics(siteId, hostname = "example.com", search = "") {
   let appendedScript = null;
@@ -62,6 +64,20 @@ test("같은 방문 세션의 동일 행동은 한 번만 집계한다", () => {
   const { window } = loadAnalytics("sample123");
   assert.equal(window.yeobaekAnalytics.track("Funnel", "CommentViewed", { oncePerSession: true }), true);
   assert.equal(window.yeobaekAnalytics.track("Funnel", "CommentViewed", { oncePerSession: true }), false);
+});
+
+test("Google Play 이동은 세션당 한 번만 집계한다", () => {
+  const { window } = loadAnalytics("sample123");
+  assert.equal(window.yeobaekAnalytics.track("Funnel", "GooglePlayOpened", { oncePerSession: true }), true);
+  assert.equal(window.yeobaekAnalytics.track("Funnel", "GooglePlayOpened", { oncePerSession: true }), false);
+  assert.match(demoSource, /open-google-play[\s\S]*GooglePlayOpened/);
+});
+
+test("상단 CTA는 사전신청 없이 Google Play 앱 페이지로 이동한다", () => {
+  assert.match(indexSource, /href="https:\/\/play\.google\.com\/store\/apps\/details\?id=com\.yeobaek&amp;hl=ko"/);
+  assert.match(indexSource, />\s*앱에서 사용해보기\s*<span/);
+  assert.match(indexSource, /Instagram을 팔로우하고 App Store 출시 소식/);
+  assert.doesNotMatch(indexSource, /waitlist|사전신청|pre-registrations/i);
 });
 
 test("학교 링크 파라미터를 학교 유입 이벤트로 전송한다", () => {
